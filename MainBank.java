@@ -2,12 +2,13 @@ import java.util.*;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.io.IOException;
 
 class MainBank 
 {
-	public static void main(String[] args) 
+	public static void main(String[] args) throws IOException
 	{
-		System.out.println("		'Welcome TO Hindustan Bank'	");
+		System.out.println("		'Welcome To Bank Managemnet Project'	");
 		Main b1 = new Main();
 		while(b1.noOfChoices)
 		{
@@ -108,7 +109,6 @@ class BankDetails
 }
 
 
-
 class Main
 {
 	public boolean noOfChoices=true;
@@ -116,6 +116,14 @@ class Main
 	AccountHolderTree b= new AccountHolderTree();
 	Node root =new Node();
 	Scanner sc=new Scanner(System.in);	
+	//private void automaticAdd()
+	//{
+		//BankDetails BD1 = new BankDetails();
+		///root=b.insert(root,BD1.generateAccountNumber(),8569,"Asumtosh Mohapatra",21,0,"10:30:52		19-07-2015",0);
+		//root=b.insert(root,BD1.generateAccountNumber(),7978,"Nithin Thota",20,0,"08:09:05		0-02-1999",0);
+		//root=b.insert(root,BD1.generateAccountNumber(),1978,"Rahul Yadav",60,0,"14:58:60		30-02-2001",0);
+		
+	//}
 	private void OpenNewAccount()
 	{
 		BankDetails BD = new BankDetails();
@@ -141,114 +149,146 @@ class Main
 	}
 	private void check()
 	{
-		System.out.printf("\nEnter Account Number:  ");
-		Long accountNo=sc.nextLong();
-		Node current=b.search(root,accountNo);
-		if(current==null)
-			System.out.println("No Account Found");
-		else
+		try
 		{
-			System.out.printf("\nEnter 4 Digita Pin:  ");
-			int pin1=sc.nextInt();
-			if(current.pin==pin1)
-				System.out.printf("Total Balance = %s\n\n\n",current.totalBalance);
+			System.out.printf("\nEnter Account Number:  ");
+			Long accountNo=sc.nextLong();
+			Node current=b.search(root,accountNo);
+			if(current==null)
+				System.out.println("No Account Found");
 			else
-				{
-					System.out.printf("\n 'Incorrect Pin' ");
-				}
-			
+			{
+				System.out.printf("\nEnter 4 Digita Pin:  ");
+				int pin1=sc.nextInt();
+				if(current.pin==pin1)
+					{
+						
+						System.out.printf("Checking Balance........\n\ncTotal Balance = %s\n\n\n",current.totalBalance);
+					}
+				else
+					{
+						System.out.printf("\n 'Incorrect Pin' ");
+					}
+				
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("\n"+"Invalid Input. Enter Only Numbers");
 		}
 	}
 	
 	private void Deposite()
 	{
-		System.out.printf("\nEnter Account Number:  ");
-		Long accountNo=sc.nextLong();
-		Node current=b.search(root,accountNo);
-		if(current==null)
-			{
-				System.out.println("No Account Found Please try again");
-				Deposite();
-			}
-		else
+		try
 		{
-			System.out.printf("\nEnter Amount:  ");
-			long amount=sc.nextLong();
-			current.totalBalance+=amount;
-			current.previous.add(amount);
-			LocalDateTime d= LocalDateTime.now();
-			DateTimeFormatter format = DateTimeFormatter.ofPattern(" HH:mm:ss	dd-MM-yyyy");
-			current.time.add(d.format(format));
-			System.out.println("Money Deposited Successfully");
-		}	
+			System.out.printf("\nEnter Account Number:  ");
+			Long accountNo=sc.nextLong();
+			Node current=b.search(root,accountNo);
+			if(current==null)
+				{
+					System.out.println("No Account Found Please try again");
+					Deposite();
+				}
+			else
+			{
+				System.out.printf("\nEnter Amount:  ");
+				long amount=sc.nextLong();
+				current.totalBalance+=amount;
+				current.previous.add(amount);
+				LocalDateTime d= LocalDateTime.now();
+				DateTimeFormatter format = DateTimeFormatter.ofPattern(" HH:mm:ss	dd-MM-yyyy");
+				current.time.add(d.format(format));
+				System.out.println("Money Deposited Successfully");
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("\n"+"Invalid Input. Enter Only Numbers");
+		}
 	}
 	
 	private void Withdraw()
 	{
-		System.out.printf("\nEnter Account Number:  ");
-		Long accountNo=sc.nextLong();
-		Node current=b.search(root,accountNo);
-		if(current==null)
-			System.out.println("No Account Found");
-		else
+		try
 		{
-			System.out.printf("\nEnter 4 Digita Pin:  ");
-			int pin1=sc.nextInt();
-			if(current.pin==pin1)
+			System.out.printf("\nEnter Account Number:  ");
+			Long accountNo=sc.nextLong();
+			Node current=b.search(root,accountNo);
+			if(current==null)
+				System.out.println("No Account Found");
+			else
 			{
-				System.out.printf("\nEnter Amount:  ");
-				long amount=sc.nextLong();
-				if(amount <= current.totalBalance)
+				System.out.printf("\nEnter 4 Digita Pin:  ");
+				int pin1=sc.nextInt();
+				if(current.pin==pin1)
 				{
-					current.totalBalance-=amount;
-					current.previous.add(-1*amount);
-					LocalDateTime d= LocalDateTime.now();
-					DateTimeFormatter format = DateTimeFormatter.ofPattern(" HH:mm:ss	dd-MM-yyyy");
-					current.time.add(d.format(format));
-					System.out.printf(amount+"  Deducted from your Account");
+					System.out.printf("\nEnter Amount:  ");
+					long amount=sc.nextLong();
+					if(amount <= current.totalBalance)
+					{
+						current.totalBalance-=amount;
+						current.previous.add(-1*amount);
+						LocalDateTime d= LocalDateTime.now();
+						DateTimeFormatter format = DateTimeFormatter.ofPattern(" HH:mm:ss	dd-MM-yyyy");
+						current.time.add(d.format(format));
+						System.out.printf(amount+"  Deducted from your Account");
+					}
+					else
+					{
+						System.out.println("Insufficient Balance");
+					}
 				}
 				else
 				{
-					System.out.println("Insufficient Balance");
+					System.out.printf("\n 'Incorrect Pin' ");
 				}
-			}
-			else
-			{
-				System.out.printf("\n 'Incorrect Pin' ");
+				
 			}
 			
 		}
-		
+		catch(Exception e)
+		{
+			System.out.println("\n"+"Invalid Input. Enter Only Numbers");
+		}
 			
 	}
 	
 	private void PreviousTranstion()
 	{
-		System.out.printf("\nEnter Account Number:  ");
-		Long accountNo=sc.nextLong();
-		Node current=b.search(root,accountNo);
-		if(current==null)
-			{
-				System.out.println("No Account Found");
-				PreviousTranstion();
-			}
-		
-		else
+		try
 		{
-			System.out.printf("\nEnter 4 Digita Pin:  ");
-			int pin1=sc.nextInt();
-			if(current.pin==pin1)
-			{
-				System.out.printf("Account Created on    "+current.OpenDate);
-				System.out.printf("\n\n  Time    "+"	 Date   	"+ "   Amount\n");
-				for(int i=0;i<current.previous.size();i++)
+
+			System.out.printf("\nEnter Account Number:  ");
+			Long accountNo=sc.nextLong();
+			Node current=b.search(root,accountNo);
+			if(current==null)
 				{
-					System.out.print(current.time.get(current.previous.size()-1-i)+"	    ");
-					System.out.print(current.previous.get(current.previous.size()-1-i)+"\n");
+					System.out.println("No Account Found");
+					PreviousTranstion();
 				}
-			}
+			
 			else
-				System.out.printf("\n 'Incorrect Pin' ");
+			{
+				System.out.printf("\nEnter 4 Digita Pin:  ");
+				int pin1=sc.nextInt();
+				if(current.pin==pin1)
+				{
+					System.out.printf("Account Created on    "+current.OpenDate);
+					System.out.printf("\n\n  Time    "+"	 Date   	"+ "   Amount\n");
+					for(int i=0;i<current.previous.size();i++)
+					{
+						System.out.print(current.time.get(current.previous.size()-1-i)+"	    ");
+						System.out.print(current.previous.get(current.previous.size()-1-i)+"\n");
+					}
+				}
+				else
+					System.out.printf("\n 'Incorrect Pin' ");
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("\n"+"Invalid Input. Enter Only Numbers");
 		}
 			
 	}
@@ -261,8 +301,8 @@ class Main
 	{
 		System.out.println("\n\nChoose an Option\n********************\n");
 		System.out.println("N: To Open New Account");
-		System.out.println("C: Check Balance");
-		System.out.println("D: Deposite money");
+		System.out.println("V: View Balance");
+		System.out.println("D: Deposit money");
 		System.out.println("W: Withdraw");
 		System.out.println("P: Previous Transaction");
 		System.out.println("E: Exit\n");
@@ -278,7 +318,7 @@ class Main
 				OpenNewAccount();
 				break;
 			}
-			case 'C':
+			case 'V':
 			{
 				check();
 				break;
@@ -303,7 +343,11 @@ class Main
 				Exit();
 				break;
 			}
-			
+			case 'I':
+			{
+				b.inorder(root);
+				break;
+			}
 			default:
 			{
 				System.out.println("\n  'Choose correct option'  ");
